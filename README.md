@@ -43,23 +43,13 @@ powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
 #### Running with `uvx`
 
 ```bash
-uvx homeassistant-mcp
+uvx --from git+https://github.com/thanosa75/haminimcp homeassistant_mcp
 ```
 
 This command will:
 1. Automatically download and cache the `homeassistant-mcp` package
 2. Create an isolated environment with all dependencies
 3. Run the server immediately
-
-To run a specific version:
-```bash
-uvx homeassistant-mcp==0.1.0
-```
-
-To use development/git versions:
-```bash
-uvx git+https://github.com/yourusername/homeassistant-mcp.git
-```
 
 ### Option 2: Local Development Installation
 
@@ -174,7 +164,10 @@ Add the following configuration:
     "homeassistant": {
       "command": "uvx",
       "args": [
-        "homeassistant-mcp"
+        "-n",
+        "--from",
+        "git+https://github.com/thanosa75/haminimcp",
+        "homeassistant_mcp"
       ],
       "env": {
         "HA_BASE_URL": "http://localhost:8123",
@@ -185,27 +178,7 @@ Add the following configuration:
 }
 ```
 
-**Complete Example `claude_desktop_config.json`:**
-```json
-{
-  "mcpServers": {
-    "homeassistant": {
-      "command": "uvx",
-      "args": [
-        "homeassistant-mcp"
-      ],
-      "env": {
-        "HA_BASE_URL": "http://localhost:8123",
-        "HA_TOKEN": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-      }
-    },
-    "other-server": {
-      "command": "python",
-      "args": ["-m", "some_other_mcp_server"]
-    }
-  }
-}
-```
+**Note:** The `-n` flag ensures the package is installed in a virtual environment.
 
 #### Generic MCP Client Configuration (mcp.json)
 
@@ -218,14 +191,16 @@ If using a custom MCP client, use the following `mcp.json` format:
     "homeassistant": {
       "description": "Home Assistant light and calendar control",
       "command": "uvx",
-      "args": ["homeassistant-mcp"],
+      "args": [
+        "-n",
+        "--from",
+        "git+https://github.com/thanosa75/haminimcp",
+        "homeassistant_mcp"
+      ],
       "env": {
         "HA_BASE_URL": "http://localhost:8123",
-        "HA_TOKEN": "your_long_lived_token_here",
-        "LOG_LEVEL": "INFO"
-      },
-      "timeout": 30000,
-      "autostart": true
+        "HA_TOKEN": "your_long_lived_token_here"
+      }
     }
   }
 }
@@ -239,27 +214,6 @@ If using a custom MCP client, use the following `mcp.json` format:
 | `HA_TOKEN` | Long-lived access token | (required) |
 | `LOG_LEVEL` | Logging level (DEBUG, INFO, WARNING, ERROR) | `INFO` |
 
-#### Using `uvx` with Custom Index (Optional)
-
-If you have a custom Python package repository:
-
-```json
-{
-  "mcpServers": {
-    "homeassistant": {
-      "command": "uvx",
-      "args": [
-        "--index-url", "https://pypi.example.com/simple",
-        "homeassistant-mcp"
-      ],
-      "env": {
-        "HA_BASE_URL": "http://localhost:8123",
-        "HA_TOKEN": "your_long_lived_token_here"
-      }
-    }
-  }
-}
-```
 
 ## Usage
 
